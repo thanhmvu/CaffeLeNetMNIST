@@ -8,6 +8,10 @@ class MnistDebug(caffe.Layer):
     top[0].reshape(bottom[0].data.shape[0], bottom[0].data.shape[1], bottom[0].data.shape[2], bottom[0].data.shape[3])
     top[1].reshape(bottom[1].data.shape[0])
     self.printing = True
+    sys.stdout.write('\nImage bottom shape:' + str(bottom[0].data.shape) +'\n')
+    sys.stdout.write('\nLabel bottom shape:' + str(bottom[1].data.shape) +'\n')
+    sys.stdout.write('\nImage top shape:' + str(top[0].data.shape) +'\n')
+    sys.stdout.write('\nLabel top shape:' + str(top[1].data.shape) +'\n')
   
   def forward(self, bottom, top):
     top[0].data[...] = bottom[0].data

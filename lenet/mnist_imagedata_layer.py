@@ -1,6 +1,4 @@
 # ==================================================================================== #
-# ==================================================================================== #
-#
 # A python layer for loading MNIST data to LeNet
 # An alternative of Caffe lmdb data layer
 # Built on top of Caffe's LeNet MNIST example http://caffe.berkeleyvision.org/gathered/examples/mnist.html
@@ -24,12 +22,12 @@
 # Note: "source" file should be in the format of "ImagePath1 Label1\nImagePath2 Label2\n ..."
 # 
 # ==================================================================================== #
-# ==================================================================================== #
 
 import caffe
 import numpy as np
 from random import shuffle
 from PIL import Image
+import sys
 
 
 class MnistImageData(caffe.Layer):
@@ -149,6 +147,11 @@ class MnistImageData(caffe.Layer):
       # Add directly to the top blob
       top[0].data[i, ...] = image
       top[1].data[i, ...] = label
+      sys.stdout.write('\ntop[0].data[i, ...]:' + str(top[0].data[i, ...].shape) +'\n')
+      sys.stdout.write('\ntop[0].data:' + str(top[0].data.shape) +'\n')
+      sys.stdout.write('\nimage shape:' + str(image.shape) + ' ' + str(type(image)) +'\n')
+      sys.stdout.write('\ntop[1].data:' + str(top[1].data.shape) +'\n')
+      sys.stdout.write('\nlabel:' + str(label) + ' ' + str(type(label)) + '\n')
   
   
   def reshape(self, bottom, top):

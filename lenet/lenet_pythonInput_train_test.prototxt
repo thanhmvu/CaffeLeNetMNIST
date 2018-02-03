@@ -1,48 +1,30 @@
 name: "LeNet"
 layer {
   name: "mnist"
-  type: "Data"
-  top: "data0"
-  top: "label0"
-  include {
-    phase: TRAIN
+  type: "Python"
+  top: "data"
+  top: "label"
+  include { 
+    phase: TRAIN 
   }
-  transform_param {
-    scale: 0.00390625
-  }
-  data_param {
-    source: "examples/mnist/mnist_train_lmdb"
-    batch_size: 64
-    backend: LMDB
+  python_param {
+    module: "mnist_imagedata_layer"
+    layer: "MnistImageData"
+    param_str: "{'batch_size': 64,'scale': 0.00390625, 'image_size': 28, 'source': '/auto/research2/vut/thesis/CaffeLeNetMNIST/lenet/train.txt'}"   # optional
   }
 }
 layer {
   name: "mnist"
-  type: "Data"
-  top: "data0"
-  top: "label0"
-  include {
-    phase: TEST
-  }
-  transform_param {
-    scale: 0.00390625
-  }
-  data_param {
-    source: "examples/mnist/mnist_test_lmdb"
-    batch_size: 100
-    backend: LMDB
-  }
-}
-layer {
-  name: "debug"
   type: "Python"
   top: "data"
   top: "label"
-  bottom: "data0"
-  bottom: "label0"
+  include { 
+    phase: TEST 
+  }
   python_param {
-    module: "mnist_debug_layer"
-    layer: "MnistDebug"
+    module: "mnist_imagedata_layer"
+    layer: "MnistImageData"
+    param_str: "{'batch_size': 100,'scale': 0.00390625, 'image_size': 28, 'source': '/auto/research2/vut/thesis/CaffeLeNetMNIST/lenet/test.txt'}"   # optional
   }
 }
 layer {
@@ -178,4 +160,3 @@ layer {
   bottom: "label"
   top: "loss"
 }
-
