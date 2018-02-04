@@ -1,0 +1,490 @@
+# ================ Input Data ================ #
+layer {
+  name: "data"
+  type: "Python"
+  top: "data_anchor"
+  top: "data_pos"
+  top: "data_neg"
+  include { 
+    phase: TRAIN 
+  }
+  python_param {
+    module: "triplet_mnist_imagedata_layer"
+    layer: "TripletMnistImageData"
+    param_str: "{'source': '/auto/research2/vut/thesis/CaffeLeNetMNIST/triplet/mnist_triplet_train.txt', 'batch_size': 64, 'scale': 0.00390625, 'image_size': 28, 'train_size': 60000}"
+  }
+}
+layer {
+  name: "data"
+  type: "Python"
+  top: "data_anchor"
+  top: "data_pos"
+  top: "data_neg"
+  include { 
+    phase: TEST 
+  }
+  python_param {
+    module: "triplet_mnist_imagedata_layer"
+    layer: "TripletMnistImageData"
+    param_str: "{'source': '/auto/research2/vut/thesis/CaffeLeNetMNIST/triplet/mnist_triplet_test.txt', 'batch_size': 100, 'scale': 0.00390625, 'image_size': 28, 'train_size': 10000}"
+  }
+}
+# ================ Anchor Net ================ #
+layer {
+  name: "conv1_anchor"
+  type: "Convolution"
+  bottom: "data_anchor"
+  top: "conv1_anchor"
+  param {
+    name: "conv1_w"
+    lr_mult: 1
+  }
+  param {
+    name: "conv1_b"
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "pool1_anchor"
+  type: "Pooling"
+  bottom: "conv1_anchor"
+  top: "pool1_anchor"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv2_anchor"
+  type: "Convolution"
+  bottom: "pool1_anchor"
+  top: "conv2_anchor"
+  param {
+    name: "conv2_w"
+    lr_mult: 1
+  }
+  param {
+    name: "conv2_b"
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 50
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "pool2_anchor"
+  type: "Pooling"
+  bottom: "conv2_anchor"
+  top: "pool2_anchor"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "ip1_anchor"
+  type: "InnerProduct"
+  bottom: "pool2_anchor"
+  top: "ip1_anchor"
+  param {
+    name: "ip1_w"
+    lr_mult: 1
+  }
+  param {
+    name: "ip1_b"
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 500
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu1_anchor"
+  type: "ReLU"
+  bottom: "ip1_anchor"
+  top: "ip1_anchor"
+}
+layer {
+  name: "ip2_anchor"
+  type: "InnerProduct"
+  bottom: "ip1_anchor"
+  top: "ip2_anchor"
+  param {
+    name: "ip2_w"
+    lr_mult: 1
+  }
+  param {
+    name: "ip2_b"
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "feat_anchor"
+  type: "InnerProduct"
+  bottom: "ip2_anchor"
+  top: "feat_anchor"
+  param {
+    name: "feat_w"
+    lr_mult: 1
+  }
+  param {
+    name: "feat_b"
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+# ================ Positive Net ================ #
+layer {
+  name: "conv1_pos"
+  type: "Convolution"
+  bottom: "data_pos"
+  top: "conv1_pos"
+  param {
+    name: "conv1_w"
+    lr_mult: 1
+  }
+  param {
+    name: "conv1_b"
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "pool1_pos"
+  type: "Pooling"
+  bottom: "conv1_pos"
+  top: "pool1_pos"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv2_pos"
+  type: "Convolution"
+  bottom: "pool1_pos"
+  top: "conv2_pos"
+  param {
+    name: "conv2_w"
+    lr_mult: 1
+  }
+  param {
+    name: "conv2_b"
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 50
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "pool2_pos"
+  type: "Pooling"
+  bottom: "conv2_pos"
+  top: "pool2_pos"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "ip1_pos"
+  type: "InnerProduct"
+  bottom: "pool2_pos"
+  top: "ip1_pos"
+  param {
+    name: "ip1_w"
+    lr_mult: 1
+  }
+  param {
+    name: "ip1_b"
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 500
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu1_pos"
+  type: "ReLU"
+  bottom: "ip1_pos"
+  top: "ip1_pos"
+}
+layer {
+  name: "ip2_pos"
+  type: "InnerProduct"
+  bottom: "ip1_pos"
+  top: "ip2_pos"
+  param {
+    name: "ip2_w"
+    lr_mult: 1
+  }
+  param {
+    name: "ip2_b"
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "feat_pos"
+  type: "InnerProduct"
+  bottom: "ip2_pos"
+  top: "feat_pos"
+  param {
+    name: "feat_w"
+    lr_mult: 1
+  }
+  param {
+    name: "feat_b"
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+# ================ Negative Net ================ #
+layer {
+  name: "conv1_neg"
+  type: "Convolution"
+  bottom: "data_neg"
+  top: "conv1_neg"
+  param {
+    name: "conv1_w"
+    lr_mult: 1
+  }
+  param {
+    name: "conv1_b"
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "pool1_neg"
+  type: "Pooling"
+  bottom: "conv1_neg"
+  top: "pool1_neg"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv2_neg"
+  type: "Convolution"
+  bottom: "pool1_neg"
+  top: "conv2_neg"
+  param {
+    name: "conv2_w"
+    lr_mult: 1
+  }
+  param {
+    name: "conv2_b"
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 50
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "pool2_neg"
+  type: "Pooling"
+  bottom: "conv2_neg"
+  top: "pool2_neg"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "ip1_neg"
+  type: "InnerProduct"
+  bottom: "pool2_neg"
+  top: "ip1_neg"
+  param {
+    name: "ip1_w"
+    lr_mult: 1
+  }
+  param {
+    name: "ip1_b"
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 500
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu1_neg"
+  type: "ReLU"
+  bottom: "ip1_neg"
+  top: "ip1_neg"
+}
+layer {
+  name: "ip2_neg"
+  type: "InnerProduct"
+  bottom: "ip1_neg"
+  top: "ip2_neg"
+  param {
+    name: "ip2_w"
+    lr_mult: 1
+  }
+  param {
+    name: "ip2_b"
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "feat_neg"
+  type: "InnerProduct"
+  bottom: "ip2_neg"
+  top: "feat_neg"
+  param {
+    name: "feat_w"
+    lr_mult: 1
+  }
+  param {
+    name: "feat_b"
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+# ================ Output Data ================ #
+layer {
+  name: "loss"
+  type: "Python"
+  bottom: "feat_anchor"
+  bottom: "feat_pos"
+  bottom: "feat_neg"
+  top: "loss"
+  python_param {
+    module: "triplet_mnist_loss_layer"
+    layer: "TripletMnistLoss"
+    param_str: "{'margin': 0.2}"
+  }
+  loss_weight: 1
+}

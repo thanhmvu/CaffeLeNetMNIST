@@ -1,0 +1,116 @@
+name: "mnist_triplet"
+layer {
+  name: "data_anchor"
+  type: "Input"
+  top: "data_anchor"
+  input_param {
+    shape: { dim: 10000 dim: 1 dim: 28 dim: 28 }
+  }
+}
+layer {
+  name: "conv1_anchor"
+  type: "Convolution"
+  bottom: "data_anchor"
+  top: "conv1_anchor"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 5
+    stride: 1
+  }
+}
+layer {
+  name: "pool1_anchor"
+  type: "Pooling"
+  bottom: "conv1_anchor"
+  top: "pool1_anchor"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv2_anchor"
+  type: "Convolution"
+  bottom: "pool1_anchor"
+  top: "conv2_anchor"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 50
+    kernel_size: 5
+    stride: 1
+  }
+}
+layer {
+  name: "pool2_anchor"
+  type: "Pooling"
+  bottom: "conv2_anchor"
+  top: "pool2_anchor"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "ip1_anchor"
+  type: "InnerProduct"
+  bottom: "pool2_anchor"
+  top: "ip1_anchor"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 500
+  }
+}
+layer {
+  name: "relu1_anchor"
+  type: "ReLU"
+  bottom: "ip1_anchor"
+  top: "ip1_anchor"
+}
+layer {
+  name: "ip2_anchor"
+  type: "InnerProduct"
+  bottom: "ip1_anchor"
+  top: "ip2_anchor"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 10
+  }
+}
+layer {
+  name: "feat_anchor"
+  type: "InnerProduct"
+  bottom: "ip2_anchor"
+  top: "feat_anchor"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 2
+  }
+}
