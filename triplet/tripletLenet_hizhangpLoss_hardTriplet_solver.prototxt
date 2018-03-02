@@ -1,12 +1,12 @@
 # =========================================================
 # To train:
 #   1. Add folder containing python input layer to PYTHONPATH
-#   2. Run: caffe train --solver=/auto/research2/vut/thesis/CaffeLeNetMNIST/triplet/tripletLenet_customSolverLoop_solver.prototxt --gpu=0
+#   2. Run: caffe train --solver=/auto/research2/vut/thesis/CaffeLeNetMNIST/triplet/tripletLenet_hizhangpLoss_hardTriplet_solver.prototxt --gpu=0
 #
 # =========================================================
 
 # The train/test net protocol buffer definition
-net: "/auto/research2/vut/thesis/CaffeLeNetMNIST/triplet/tripletLenet_customSolverLoop_train_test.prototxt"
+net: "/auto/research2/vut/thesis/CaffeLeNetMNIST/triplet/tripletLenet_hizhangpLoss_hardTriplet_train_test.prototxt"
 
 # test_iter specifies how many forward passes the test should carry out.
 # In the case of MNIST, we have test batch size 100 and 100 test iterations,

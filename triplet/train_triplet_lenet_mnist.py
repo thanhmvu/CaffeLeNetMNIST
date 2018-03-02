@@ -1,5 +1,5 @@
 """
-Train triplet using custom solver loop with online selection of hard triplets 
+Train triplet using custom solver loop with online triplet generation and online hard triplet selection
 
 Author: Thanh Vu 
 Date: Feb 3, 2018
@@ -154,11 +154,11 @@ def main():
   
   # Load the Solver
 #   solver = None  # ignore this workaround for lmdb data (can't instantiate two solvers on the same data)
-  solver = caffe.SGDSolver(current_dir + 'tripletLenet_customSolverLoop_solver.prototxt')
+  solver = caffe.SGDSolver(current_dir + 'tripletLenet_hizhangpLoss_hardTriplet_solver.prototxt')
 
   # Load data paths
-  train_img_paths_by_label = readImagePaths(current_dir + '../train.txt')
-  test_img_paths_by_label = readImagePaths(current_dir + '../test.txt')
+  train_img_paths_by_label = readImagePaths(current_dir + '../lenet/train.txt')
+  test_img_paths_by_label = readImagePaths(current_dir + '../lenet/test.txt')
 
   # Config preprocessing
   transformer = config_transformer(solver.net.blobs[DATA_ANCHOR].data.shape, SCALE, IS_COLOR)
